@@ -15,6 +15,10 @@ type Coordinates = {
     y: number;
   };
 
+// enum Colors {
+//   Red =
+// }
+
 function Canvas(settings: GameSettings) {
     
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
@@ -28,38 +32,45 @@ function Canvas(settings: GameSettings) {
     React.useEffect(() => {
     
         // randomly picks 2 coordinates
-        let timerStart: boolean = false;
-        setInterval(() => {
-            placeRandomPixel()
-        }, 1000)
+        // let timerStart: boolean = false;
+        // setInterval(() => {
+        //     placeRandomPixel()
+        // }, 1000)
     
-        // Example function should be randomly drawing a random coodindate between the canvas
-        function placeRandomPixel() {
-          if (!timerStart) {
-            timerStart = true;
-          }
+        // // Example function should be randomly drawing a random coodindate between the canvas
+        // function placeRandomPixel() {
+        //   if (!timerStart) {
+        //     timerStart = true;
+        //   }
     
-          if (timerStart) {
-              console.log("hit here");
-            // start placing a random pixel here
-            let randX: number = Math.floor(Math.random() * settings.x + 1);
-            let randY: number = Math.floor(Math.random() * settings.y + 1);
-            // console.log(`Canvas hit: ${randX},${randY}`);
+        //   if (timerStart) {
+        //     // start placing a random pixel here
+        //     let randX: number = Math.floor(Math.random() * settings.x + 1);
+        //     let randY: number = Math.floor(Math.random() * settings.y + 1);
+        //     // console.log(`Canvas hit: ${randX},${randY}`);
     
-            // use the X and Y coordinates to place a random pixel
-            placePixel({
-              x: randX,
-              y: randY
-            })
-          }
-        }
+        //     // use the X and Y coordinates to place a random pixel
+        //     placePixel({
+        //       x: randX,
+        //       y: randY
+        //     })
+        //   }
+        // }
     
         function placePixel(coordinates: Coordinates) {
             // console.log("CanvasRef: ", canvasRef);
           if (canvasRef.current) {
             const renderCtx = canvasRef.current.getContext('2d');
             if (renderCtx) {
-              renderCtx.fillRect(coordinates.x, coordinates.y, 1,1);
+              var id = renderCtx.createImageData(1,1)
+              var d = id.data;
+              d[0] = 0; // r
+              d[1] = 0; // g
+              d[2] = 0; // b
+              d[3] = 255; // a (0-255)
+              renderCtx.putImageData(id, coordinates.x, coordinates.y);
+              // console.log(`Clicked.... ${JSON.stringify(id)}`)
+              // renderCtx.fillRect(coordinates.x, coordinates.y, 1,1);
             }
           }
           // const renderCtx = canvasRef.current.getContext('2d');
@@ -68,7 +79,6 @@ function Canvas(settings: GameSettings) {
         }
     
         let mouseDown: boolean = false;
-    
     
         let start: Coordinates = { x:0, y:0 };
         let end: Coordinates =  { x:0, y:0 };
@@ -153,15 +163,18 @@ function Canvas(settings: GameSettings) {
       }, [context])
 
     return (
-        <canvas 
-        ref={canvasRef}
-        width={settings.x}
-        height={settings.y}
-        style={{
-          border: '2px solid #000',
-          marginTop: 10,
-          marginLeft:10
-        }}/>
+        // Div is wrapped in canvas so we can handle CSS with it 
+        <div>
+            <canvas 
+            ref={canvasRef}
+            width={settings.x}
+            height={settings.y}
+            style={{
+            border: '2px solid #000',
+            marginTop: 10,
+            marginLeft:10
+            }}/>
+        </div> 
     )
 }
 
